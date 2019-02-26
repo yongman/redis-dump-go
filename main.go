@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/yannh/redis-dump-go/redisdump"
+	"github.com/yongman/redis-dump-go/redisdump"
 )
 
 func drawProgressBar(to io.Writer, currentPosition, nElements, widgetSize int) {
@@ -33,7 +33,9 @@ func realMain() int {
 	port := flag.Int("port", 6379, "Server port")
 	nWorkers := flag.Int("n", 10, "Parallel workers")
 	withTTL := flag.Bool("ttl", true, "Preserve Keys TTL")
-	output := flag.String("output", "resp", "Output type - can be resp or commands")
+	output := flag.String("output", "resp", "Output type - can be resp or commands or keys(regex matched keys)")
+	key_regexp := flag.String("key_format", ".*", "Keys filter regexp")
+	auth := flag.String("auth", "", "redis server connection auth")
 	silent := flag.Bool("s", false, "Silent mode (disable progress bar)")
 	flag.Parse()
 
@@ -44,6 +46,9 @@ func realMain() int {
 
 	case "commands":
 		serializer = redisdump.RedisCmdSerializer
+
+	case "keys":
+		serializer = redisdump.RedisKeysSerializer
 
 	default:
 		log.Fatalf("Failed parsing parameter flag: can only be resp or json")
@@ -69,8 +74,8 @@ func realMain() int {
 		}()
 	}
 
-	logger := log.New(os.Stdout, "", 0)
-	if err = redisdump.DumpServer(*host+":"+strconv.Itoa(*port), *nWorkers, *withTTL, logger, serializer, progressNotifs); err != nil {
+	logger := log.New(os.Stderr, "", 0)
+	if err = redisdump.DumpServer(*host+":"+strconv.Itoa(*port), *nWorkers, *withTTL, logger, *key_regexp, *auth, serializer, progressNotifs); err != nil {
 		fmt.Println(err)
 		return 1
 	}
