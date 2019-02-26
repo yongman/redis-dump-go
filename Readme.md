@@ -37,15 +37,21 @@ $ go install
 ```
 $ redis-dump-go -h
 Usage of ./redis-dump-go:
+  -auth string
+        redis server connection auth
   -host string
         Server host (default "127.0.0.1")
+  -key_format string
+        Keys filter regexp (default ".*")
   -n int
         Parallel workers (default 10)
   -output string
-        Output type - can be resp or commands (default "resp")
+        Output type - can be resp or commands or keys(regex matched keys) (default "resp")
   -port int
         Server port (default 6379)
   -s    Silent mode (disable progress bar)
+  -ttl
+        Preserve Keys TTL (default true)
 $ redis-dump-go > redis-backup.resp
 [==================================================] 100% [5/5]
 ```
