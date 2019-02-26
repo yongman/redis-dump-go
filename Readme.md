@@ -8,6 +8,7 @@ Dump Redis keys to a file. Similar in spirit to https://www.npmjs.com/package/re
 * Uses SCAN rather than KEYS * for much reduced memory footprint with large databases
 * Easy to deploy & containerize - single binary.
 * Generates a [RESP](https://redis.io/topics/protocol) file rather than a JSON or a list of commands. This is faster to ingest, and [recommended by Redis](https://redis.io/topics/mass-insert) for mass-inserts.
+* Output keys only with regexp match support to stdout.
 
 Warning: like similar tools, Redis-dump-go does NOT provide Point-in-Time backups. Please use [Redis backups methods](https://redis.io/topics/persistence) when possible.
 
